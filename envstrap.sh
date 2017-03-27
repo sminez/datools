@@ -11,7 +11,7 @@ sudo apt-get install software-properties-common
 sudo add-apt-repository ppa:neovim-ppa/stable
 sudo apt-get update
 sudo apt-get install zsh silversearcher-ag curl rofi git npm python3-pip \ 
-    docker.io ranger htop neovim tree uuid qualc
+    docker.io ranger htop neovim tree uuid qualc gnuplot
 
 # Useful executable Python modules
 sudo python3 -m pip install --upgrade pip
