@@ -14,13 +14,13 @@ sort -k 1,3
 ```
 
 ##### Or in English...
-For all .raw log files,
-filter for playlist hashes of live streams,
-convert the Python non-JSON to JSON,
-extract the message field,
-remove the human readable line noise,
-extract the guid, hash and timestamp
-and then sort by guid and timestamp.
+For all .raw log files,  
+filter for playlist hashes of live streams,  
+convert the Python non-JSON to JSON,  
+extract the message field,  
+remove the human readable line noise,  
+extract the id, hash and timestamp  
+and then sort by guid and timestamp.  
 
 
 ## Here be dragons!
