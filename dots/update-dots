@@ -1,0 +1,20 @@
+#! /bin/bash
+
+# NOTE:: This just pulls in my public dotfiles so I can diff them before
+#        committing rather than symlinking and risk leaking personal/confidential
+#        info.
+
+# .*rc files and related scripts
+cp ~/.bashrc bashrc
+cp ~/.zshrc zshrc
+cp ~/.vimrc vimrc
+cp ~/.Xresources Xresources
+cp ~/.bash-theme.sh bash-theme.sh
+cp ~/.i3blocks.conf i3blocks.conf
+
+# Config directories
+cp ~/.i3 -r i3
+cp ~/.zsh -r zsh
+cp ~/.vim -r vim
+# Clear out the plugins themselves: they'll get pulled on :PlugInstall
+rm vim/plugged -rf

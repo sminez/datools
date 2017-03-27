@@ -1,0 +1,274 @@
+##############################################################################
+# i3 config file (v4)
+# Please see http://i3wm.org/docs/userguide.html for a complete reference!
+#
+# >> gtk theme: paper
+# >> using lxappearance to tweak gtk themes
+# >> https://davedavenport.github.io/rofi/
+# >> icons: sudo add-apt-repository ppa:snwh/pulp
+#    	    sudo apt-get install paper-gtk-theme paper-icon-theme
+# >> Power / suspend issues can be fixed here!
+#       /etc/systemd/logind.conf
+##############################################################################
+
+
+# Set modifier key
+set $mod Mod4
+
+# Colours
+set $base00 #272822
+set $base01 #383830
+set $base02 #49483e
+set $base03 #75715e
+set $base04 #a59f85
+set $base05 #d0c8c6
+set $base06 #e9e1dd
+set $base07 #f9f8f5
+set $base08 #cb6077
+set $base09 #d28b71
+set $base0A #f4bc87
+set $base0B #beb55b
+set $base0C #7bbda4
+set $base0D #8ab3b5
+set $base0E #a89bb9
+set $base0F #bb9584
+
+# font
+# font pango:Source Code Pro 11
+font pango: System San Francisco 12
+# font pango:Fira Mono 11
+
+# i3-gaps related
+new_window 1pixel
+# new_window normal
+smart_borders on
+gaps inner 20
+gaps outer 2
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# start a terminal
+bindsym $mod+Return exec gnome-terminal #i3-sensible-terminal
+
+# kill focused window
+bindsym $mod+Shift+q kill
+
+# start dmenu (a program launcher)
+bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu='rofi  -dmenu -p "λ Run::" -i -font "Hack 12"'
+# This one shows terminal apps as well
+bindsym $mod+shift+d exec --no-startup-id rofi -show run -i -font "Hack 12"
+
+# change focus
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+# alternatively, you can use the cursor keys:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+# alternatively, you can use the cursor keys:
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Make the currently focused window a scratchpad
+bindsym $mod+Shift+minus move scratchpad
+# Show the first scratchpad window
+bindsym $mod+minus scratchpad show
+
+# split in horizontal orientation
+bindsym $mod+period split h
+# split in vertical orientation
+bindsym $mod+comma split v
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+# focus the child container
+#bindsym $mod+d focus child
+
+# Icons from font awesome: http://fontawesome.io/cheatsheet/
+# Left Monitor
+set $ws1 1I 
+set $ws2 2II 
+set $ws3 3III 
+set $ws4 4IV 
+set $ws5 5V 
+# Right Monitor
+set $ws6 6VI 
+set $ws7 7VII 
+set $ws8 8VIII λ
+set $ws9 9IX 
+set $ws10 10X 
+
+# Switch workspaces
+bindsym $mod+Tab workspace back_and_forth
+bindsym $mod+Shift+period workspace next
+bindsym $mod+Shift+comma workspace prev
+# switch focus to other monitor
+bindsym $mod+control+bracketleft focus output left
+bindsym $mod+control+bracketright focus output right
+# move workspace to left and right monitors
+bindsym $mod+Shift+bracketleft move workspace to output left
+bindsym $mod+Shift+bracketright move workspace to output right
+
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+0 workspace $ws10
+
+# Move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+bindsym $mod+Shift+0 move container to workspace $ws10
+
+# Audio controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id "amixer -D pulse sset Master 5%+"
+bindsym XF86AudioLowerVolume exec --no-startup-id "amixer -D pulse sset Master 5%-"
+bindsym XF86AudioMute exec --no-startup-id "amixer -D pulse sset Master unmute"
+# Media player controls
+bindsym XF86AudioPlay   exec "mpc toggle"
+bindsym XF86AudioNext   exec "mpc next"
+bindsym XF86AudioPrev   exec "mpc prev"
+# Duplicate bindings for when I'm on the home row!
+bindsym $mod+Shift+p    exec "mpc toggle"
+
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+# exit i3 (logs you out of your X session)
+# bindsym $mod+Shift+e exec "i3-nagbar -t warning -m'You hit exit! Really exit? (Double check that everything is saved...)' -b'Yes, exit i3!' 'i3-msg exit'"
+
+# Full logout menu via rofi
+bindsym $mod+Shift+e exec ~/.i3/scripts/power-menu
+# Show currently open windows
+bindsym $mod+shift+w exec rofi -show window
+
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+        bindsym h resize shrink width 10 px or 10 ppt
+        bindsym j resize grow height 10 px or 10 ppt
+        bindsym k resize shrink height 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+
+# Widow Colours
+#                       border  background text    indicator
+client.focused          $base0C $base0C    $base00 $base07
+client.focused_inactive $base00 $base00    $base00 $base07
+client.unfocused        $base00 $base00    $base03 $base07
+client.urgent           $base00 $base08    $base00 $base07
+
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+bar {
+        position top
+        status_command i3blocks
+        height 25
+        # binding_mode_indicator yes
+        workspace_buttons yes
+        mode dock
+        strip_workspace_numbers yes
+        # tray_output eDP1
+        tray_padding 3
+        colors {
+                separator  $base03
+                background $base01
+                statusline $base05
+#	                                 border  background text
+                focused_workspace  $base0D $base0D    $base06
+          	    active_workspace   $base0D $base0D    $base06
+      	        inactive_workspace $base02 $base02    $base04
+      	        urgent_workspace   $base02 $base02    $base08
+    }
+}
+
+#####################
+# Program shortcuts #
+#####################
+bindsym $mod+control+p exec scrot '%Y-%m-%d_%s.png' -e 'mv $f ~/Pictures/scrots/'
+bindsym $mod+control+c exec google-chrome
+bindsym $mod+control+t exec caja --no-desktop --browser -n /home/innes/
+bindsym $mod+control+i exec python3 -m qtconsole
+bindsym $mod+control+j exec ~/anaconda3/bin/jupyter-notebook
+
+###############################
+# Bind programs to workspaces #
+###############################
+
+# Spotify is in beta and fails to set the window hinting correctly :(
+for_window [class="Spotify"] move to workspace $ws9
+# assign [class="Skype-beta"]  $ws9
+assign [class="Steam"]  $ws10
+assign [class="libreoffice"] $ws3
+for_window [instance="__scratchpad"] move scratchpad 
+
+###############################################
+# Autorun commands at the start of a session  #
+###############################################
+exec --no-startup-id python3 -m qtconsole -name __scratchpad
+
+# Drop resolution to something less insane in comparison to my work monitor
+exec --no-startup-id xrandr --output eDP-1 --mode 1920x1080
+
+# Wallpaper
+exec_always --no-startup-id feh --bg-fill /home/innes/Pictures/Wallpapers/dunstanburgh.jpg
+# exec_always --no-startup-id feh --bg-fill /home/innes/Pictures/Wallpapers/Computer-Programmer-Wallpaper.png
+# exec_always --no-startup-id feh --bg-fill /home/innes/Pictures/Wallpapers/elephant.png
+
+# Set up applets and daemons
+exec --no-startup-id nm-applet                    # Wifi config tool
+exec --no-startup-id compton                      # visual niceness

@@ -1,0 +1,107 @@
+####################################################################
+# {-- I.D.A-M bashrc --} #
+#########################
+
+#########################################################
+# My aliases and config #
+#########################
+# source ~/.vim/plugged/gruvbox/gruvbox_256palette.sh
+source ~/.bash-theme.sh
+
+# Enable fzf
+# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# export FZF_DEFAULT_COMMAND='""ag --hidden --ignore .git -g ""'
+
+# Fixing tab completion
+bind 'set show-all-if-ambiguous on'
+bind 'TAB:menu-complete'
+bind 'set completion-ignore-case on'
+
+bind 'set colored-stats on'
+
+# General settings
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# NOTE: re-enable when working with Go code
+export GOPATH=$HOME/GO_PATH
+export PATH=$GOPATH/bin:$PATH:/home/innes/julia-install/bin:/usr/local/go/bin:$PATH
+export GOROOT="/usr/local/go"
+export GOBIN=$GOPATH/bin
+
+alias vi="nvim"
+alias vim="nvim"
+alias e="emacsclient -nw"
+export EDITOR="vim"
+export USE_EDITOR=$EDITOR
+export VISUAL=$EDITOR
+
+# Set terminal to use 256 colors
+export TERM=xterm-256color
+
+export LESS='-M -i -R'
+# Display multi-byte characters.
+export LESSCHARSET=utf-8
+# Remember upto 1000 history items.
+export LESSHISTSIZE=1000
+# Use less as the standard pager.
+export PAGER=less
+# Use less for viewing man pages.
+export MANPAGER=$PAGER
+# support colors in less
+export LESS_TERMCAP_mb=$'\E[01;31m'
+export LESS_TERMCAP_md=$'\E[01;31m'
+export LESS_TERMCAP_me=$'\E[0m'
+export LESS_TERMCAP_se=$'\E[0m'
+export LESS_TERMCAP_so=$'\E[01;44;33m'
+export LESS_TERMCAP_ue=$'\E[0m'
+export LESS_TERMCAP_us=$'\E[01;32m'
+
+# Quick Dotfile edits
+alias vcon="vim ~/.vimrc"
+alias bcon="vim ~/.bashrc"
+alias coni="vim ~/.i3/config"
+# Quick reload .bashrc
+alias bre="source ~/.bashrc"
+
+alias ls='ls -F --color'
+alias l="ls"
+alias s="ls"
+alias lsa='ls -a'
+alias la='ls -a'
+alias lsl='ls -oh'
+
+alias cd..="cd .."
+alias ..="cd .."
+
+alias fixapt='sudo rm /var/lib/apt/lists/* -vf'
+alias aptcheck='aptitude full-upgrade --simulate --assume-yes'
+alias aptupdate='sudo aptitude full-upgrade --assume-yes'
+alias fixmpd='sudo service mpd stop && sudo update-rc.d mpd disable && mpd'
+alias clearswp='rm ~/.local/share/nvim/swap/*.swp'
+
+alias virtualenv="python3 -m virtualenv"
+
+# Python shortcuts
+alias ptp="ptpython"
+alias virtualenv="python3 -m virtualenv"
+# Conda shortcuts to avoid having conda clobber the path
+alias cpy3="~/anaconda3/bin/python3.5"
+alias conda="~/anaconda3/bin/conda"
+alias cpip="sudo -H ~/anaconda3/bin/pip"
+alias cipy="~/anaconda3/bin/ipython"
+alias nbstart="~/anaconda3/bin/jupyter notebook"
+
+alias julia='julia --color=yes'
+
+# Helpers for work related things
+alias aws-token="~/Work/helpers/aws-2fa-access-keys/aws-get-token -u imorrison -m"
+
+# Docker shortcuts because sod typing docker commands
+alias dcn="sudo docker ps -a"
+alias dcq="dcn -q"
+alias dim="sudo docker images -f 'dangling=true' -aq"
+alias dka='sudo docker stop $(dcq) && sudo docker rm $(dcq) && sudo docker rmi $(dim)'
+
+# Go linting
+alias golintall="gosimple ./... ; golint; go vet ./..."

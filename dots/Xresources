@@ -1,0 +1,35 @@
+! Fonts
+Xft.antialias: true
+Xft.hinting:   true
+Xft.rgba:      rgb
+Xft.hintstyle: hintfull
+Xft.dpi:       96
+Xcursor.theme: Paper
+Xcursor.size: 20
+
+! Rofi
+rofi.opacity: 95
+rofi.width: 50
+rofi.lines: 10
+rofi.fg: #f4bc87
+rofi.bg: #272822
+rofi.hlfg: #272822
+rofi.hlbg: #f4bc87
+rofi.bc: #272822
+rofi.bw: 2
+rofi.location: 0
+
+! Use extended color scheme
+rofi.color-enabled:                  true
+rofi.color-normal:                   argb:00000000, #7ba, argb:11FFFFFF, #7ba,#333
+rofi.color-urgent:                   argb:00000000, #c67, argb:11FFFFFF, #c67,#333
+rofi.color-active:                   argb:00000000, #d87, argb:11FFFFFF, #d87,#333
+rofi.color-window:                   argb:ee333333, #8bb,#8bb
+rofi.separator-style:                solid
+
+/* rofi.location: 7 */
+rofi.padding: 1
+rofi.yoffset: 0
+rofi.xoffset: 0
+rofi.fixed-num-lines: 1
+rofi.terminal: gnome-terminal

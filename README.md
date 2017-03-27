@@ -27,6 +27,8 @@ and then sort by guid and timestamp.
 _s/dragons/useful day to day utilities/_
 
 - _bootstrap.sh_ will install a bunch of general tools used in the scripts.
+- _envstrap.sh_ installs other utilities that I use on a day to day bases (ymmv).
+  - _dots_ contains the public parts of my system dotfiles.
 - _scripts_ contains utility scripts with example use cases.
 - _bin_ contains installable things rather than scripts.
 - _notes_ contains some examples and thoughts on how I use this stuff.

@@ -1,0 +1,436 @@
+"============================================================================
+" .: I.D.A-M :.     __.-/|
+" -------------     \`o_O'
+"                    =( )= +--------+
+"                      U|  | .vimrc |
+"            /\  /\   / |  +--------+
+"           ) /^\) ^\/ _)\     |
+"           )   /^\/   _) \    |
+"           )   _ /  / _)  \___|_
+"       /\  )/\/ ||  | )_)\___,|))
+"      <  >      |(,,) )__)    |
+"       ||      /    \)___)\
+"       | \____(      )___) )____
+"        \______(_______;;;)__;;;)
+"
+" I've tried to keep this in some sort of sane order with similar functionality
+" being grouped together and a *lot* of comments to explain what everything
+" does!
+"
+" I'm also using my .vimrc as a place to keep notes on useful tips and tricks
+" as and when I find them. (http://www.vimbits.com & http://vimawesome.com ftw!)
+"
+" NOTE: I am using NeoVim on my main machine but I am trying to keep this
+"       compatible with normal Vim as well.
+
+"=============================================================================
+" .: Notes, Tips & Tricks :.
+" --------------------------
+" :.! {shell command}
+"    Run a shell command and dumps the output to the current buffer
+" :w !sudo tee %
+"    Allows you to save files that require root permissions
+" :earlier [n]m
+"    Revert the buffer back that many minutes (if it hasn't been closed!)
+" :later [n]m
+"    This will revert back to the current state
+" :g/{string}/y A
+"    Yank all lines containing [string] into the a/@a register
+" gf
+"    On a file name in Normal mode will try to open the file...!
+" <C-r>=
+"    In Insert mode this will open the expression register. Type in a
+"    mathematical expression, hit enter and it gets pasted in!
+
+"=============================================================================
+" THIS IS STUPID:
+" You need to clear current auto commands so they won't be run twice if you
+" re-source your .vimrc
+au!
+
+"=============================================================================
+" .: VimPlug - Plugin Manager :.
+"                 __ __                /^^\ /^\  /^^\_
+"     _          _@)@) \            ,,/ '` ~ `'~~ ', `\.
+"   _/o\_ _ _ _/~`.`...'~\        ./~~..,'`','',.,' '  ~:
+"  / `,'.~,~.~  .   , . , ~|,   ,/ .,' , ,. .. ,,.   `,  ~\_
+" ( ' _' _ '_` _  '  .    , `\_/ .' ..' '  `  `   `..  `,   \_
+"  ~V~ V~ V~ V~ ~\ `   ' .  '    , ' .,.,''`.,.''`.,.``. ',   \_
+"   _/\ /\ /\ /\_/, . ' ,   `_/~\_ .' .,. ,, , _/~\_ `. `. '.,  \_
+"  < ~ ~ '~`'~'`, .,  .   `_: ::: \_ '      `_/ ::: \_ `.,' . ',  \_
+"   \ ' `_  '`_    _    ',/ _::_::_ \ _    _/ _::_::_ \   `.,'.,`., \-,-,-,_,_,
+"    `'~~ `'~~ `'~~ `'~~  \(_)(_)(_)/  `~~' \(_)(_)(_)/ ~'`\_.._,._,'_;_;_;_;_;
+
+"  To use VimPlug you need to place the plug.vim file in the .vim/autoload
+"  directory. The following curl command will help:
+"    curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+function! DoRemote(arg)
+  UpdateRemotePlugins
+endfunction
+
+filetype off
+call plug#begin('~/.vim/plugged')
+" .: Language / Mode :.
+Plug 'fatih/vim-go'                     " Auto formatting and doc helpers
+Plug 'hylang/vim-hy'                    " Pythonic LISP
+Plug 'rust-lang/rust.vim'               " Rust Lang
+Plug 'davidhalter/jedi-vim'             " Python completion and helpers
+Plug 'JuliaEditorSupport/julia-vim'     " Julia support with \symbol auto complete
+Plug 'gonzaloserrano/vim-markdown-todo' " Add todo boxes to markdown files
+
+" .: Utility :.
+" Fuzzy file finder that has a nice interface
+Plug 'tpope/vim-vinegar'                " Hit `-` for a directory listing (uses Nerdtee if installed)
+Plug 'ervandew/supertab'                " Tab now works for auto-completion
+Plug 'tpope/vim-fugitive'               " Improved git interaction
+Plug 'scrooloose/nerdtree'              " File browser
+Plug 'scrooloose/syntastic'             " Syntax checking
+Plug 'wincent/command-t', {'do': 'cd ruby/command-t && ruby extconf.rb && make'}
+
+" .: Additional editing commands :.
+Plug 'tpope/vim-surround'               " Quick surround with parens and quotes
+Plug 'tpope/vim-commentary'             " Quick comment/uncomment
+
+" .: Colour Schemes :.
+Plug 'morhetz/gruvbox'                  " Low contrast, awesome theme
+Plug 'joshdick/onedark.vim'             " Port of the Atom theme
+
+" .: UI :.
+Plug 'lilydjwg/colorizer'               " colour preview for #rrggbb
+Plug 'airblade/vim-gitgutter'           " Show file diffs as you edit
+Plug 'vim-airline/vim-airline'          " Status bar with lots of integrations
+Plug 'dhruvasagar/vim-table-mode'       " Quick creation and layout for tables
+Plug 'vim-airline/vim-airline-themes'   " Themes for airline
+Plug 'junegunn/rainbow_parentheses.vim' " Colour matching parens
+
+if has('nvim')
+    " Better autocomplete
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    let g:doplete#enable_at_startup = 1
+endif
+
+call plug#end()
+filetype plugin indent on               " Enable filetype based behaviour now
+                                        " that plugins have loaded.
+
+"=============================================================================
+" .: Global Settings :.   _____
+"                      .-'.  ':'-.
+"       *            .''::: .:    '.       *
+"                   /   :::::'      \
+"                  ;.    ':' `       ;   *
+"          *       \ '      ::::.    ;         *
+"                   \       '::::   /      *
+"                    '.      :::  .'             *
+"       *              '-.___'_.-'
+
+let mapleader=" "               " Leader is spacebar
+syntax enable                   " Enable syntax highlighting
+
+set clipboard+=unnamedplus      " Always copy and paste to the sytem clipboard 
+set splitright splitbelow       " Open new splits on the right and below current
+set wildmode=full
+set softtabstop=4               " Number of spaces inserted on tab key press
+set shiftwidth=4                " Number of spaces to indent by in Normal mode
+set laststatus=2                " Always show last command
+set noshowmatch                 " Disable the REALLY annoying paren matching
+let g:loaded_matchparen=1       " As above
+set nosmarttab                  " Consistant tab behavuour
+set lazyredraw                  " Don't redraw screen in macros / bound 
+set noshowmode                  " mode already shown in airline
+set autoindent                  " Indent when moving to the next line
+set ttimeoutlen=0               " These two stop vim waiting for ages with multi
+set ttimeout                    " character keymaps
+set tabstop=4                   " Set real tab characters to have a visual size of 4
+set expandtab                   " Always insert spaces instead of tabs
+set ignorecase                  " Ignore case when searching
+set smartcase                   " force caps if i use them in the search
+set incsearch                   " Search as you type when using /
+set path +=**                   " Make Vim search for files recrsively
+set hlsearch                    " Auto highlight search term matches
+set wildmenu                    " Command menu
+set showcmd                     " Show the last command in the lower right
+set mouse=a                     " scroll and select with the mouse
+set hidden                      " allow switching buffers with unsaved changes
+set nowrap                      " Don't auto wrap my buffers please Vim!
+set textwidth=0                 " No really...
+set wrapmargin=0                " f*** off with wrapping my buffers!
+set number                      " Show line numbers
+set ruler                       " show current column
+" set list                        " Show whitespace
+set rnu                         " use relative line numbers
+
+if !has('nvim')
+    " Not required for NeoVim but definately want when using Vim!
+    set encoding=utf-8          " always use utf-8
+    set nocompatible            " use vim defaults instead of vi
+endif
+
+
+"=============================================================================
+" .: Built in feature configuration :.
+" ------------------------------------
+" Configure the built in netrw file browser
+let g:netrw_banner=0                            " disable banner
+let g:netrw_browse_split=4                      " open in prior window
+let g:netrw_altv=1                              " open splits to the right
+let g:netrw_liststyle=3                         " tree view
+let g:netrw_list_hide=netrw_gitignore#Hide()    " hide gitignore'd files
+
+
+"=============================================================================
+" .: Key bindings - Plugin specific bindings are with config below :.
+"  ,---,---,---,---,---,---,---,---,---,---,---,---,---,--------,
+"  |Esc| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0 | + | ' | Bckspc |
+"  |---'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,------|
+"  | Tab | Q | W | E | R | T | Y | U | I | O | P | [ | ] | <-'  |
+"  |-----',--',--',--',--',--',--',--',--',--',--',--',--'|     |
+"  | Caps | A | S | D | F | G | H | J | K | L | ; | ' | # |     |
+"  |------',--'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'---'-----|
+"  | Shift | \ | Z | X | C | V | B | N | M | , | . | / | Shift  |
+"  |------,'----'---'---'---'---'---'---'---'-,-'---'-,--,------|
+"  | Ctrl | Fn | Alt |                        | AltGr |  | Ctrl |
+"  '------'----'-----'------------------------'-------'--'------'
+
+"  Smash escape to return to Normal mode
+inoremap fd <esc>
+vnoremap fd <esc>
+nnoremap fd <esc>
+" Make Y behave like other capitalsa: yank from cursor to EOL
+map Y y$
+" Leader alternatives for Visual mode
+nnoremap <Leader>vv V
+nnoremap <Leader>vc <C-v>
+" Force saving for files that require sudo
+" NOTE: This is a command mapping -> `:w!!`
+cmap w!! %!sudo tee > /dev/null %
+" Move vertically by *visual* lines not source lines
+nnoremap j gj
+nnoremap k gk
+" Delete current buffer
+nnoremap <Leader>bd :bd<CR>
+" Cycle through the currently open buffers
+nnoremap bn :bn<CR>
+nnoremap bN :bp<CR>
+" Cycle through the currently open tabs
+nnoremap gt :tabn<CR>
+nnoremap gT :tabp<CR>
+" Open a new tab
+nnoremap <Leader>n :tabnew<CR>
+" Quick forced save
+nmap <leader>fs :w!<CR>
+" Quickly close the current window & Vim if this is the last window
+nmap <leader>q :q<CR>
+" Toggle search highlighting (defaults to on following a search)
+nnoremap <leader>h :set hlsearch! hlsearch?<CR>
+" Insert blank lines without needing insert mode
+nmap t o<ESC>k
+nmap T O<ESC>j
+" Split right
+nnoremap <Leader>w/ :vsp<CR>
+" Split below
+nnoremap <Leader>w- :sp<CR>
+" Move between splits with Alt-hjkl
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
+" Reselect visual blocks when (un)indenting
+vnoremap < <gv
+vnoremap > >gv
+" Open .vimrc in a new tab
+nnoremap <Leader>R :tabnew $MYVIMRC<CR>
+
+" .: NeoVim Terminal mode - :terminal :.
+if has('nvim')
+    " Retain split navigation when in a NeoVim terminal buffer
+    tnoremap <A-h> <C-\><C-n><C-w>h
+    tnoremap <A-j> <C-\><C-n><C-w>j
+    tnoremap <A-k> <C-\><C-n><C-w>k
+    tnoremap <A-l> <C-\><C-n><C-w>l
+endif
+
+nnoremap <Leader>cbd :set background=dark<CR>
+nnoremap <Leader>cbl :set background=light<CR>
+
+
+"=============================================================================
+" .: Plugin Setup :.  .--.                        .-.
+"                 .---|--|   .-.     .---.  .---. |~|    .--.
+"              .--|===|  |---|_|--.__| J |--|:::| |~|-==-|==|---.
+"            .-|%%|Git|  |===| |~~|%%| e |--|   |_|~|NERD|  |___|-.
+"            |=|  |   |  |===| |==|  | d |  |:::|=| |Tree|  |---|=|
+"            | |  |   |  |   |_|__|  | i |__|   | | |    |  |___| |
+"            |=|~~|===|--|===|~|~~|%%|~~~|--|:::|=|~|----|==|---|=|
+"            '-^--^---'--^---^-^--^--^---'--^---^-^-^-==-^--^---^-'
+" .: Language / Mode :.
+" >>> Jedi - Python mode
+let g:jedi#goto_command = "<leader>,c"
+let g:jedi#goto_assignments_command = "<leader>,a"
+let g:jedi#goto_definitions_command = ""
+let g:jedi#documentation_command = "<Leader>,d"
+let g:jedi#usages_command = "<leader>,u"
+let g:jedi#completions_command = "<C-Space>"
+let g:jedi#rename_command = "<leader>,r"
+let g:jedi#use_splits_not_buffers = "right"
+let g:jedi#force_py_version = 3
+au FileType python let b:python_highlight_all=1
+" ----------------------------------------------------------------------------
+" >>> Vim-go
+let g:go_fmt_command = "goimports"
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_interfaces = 1
+let g:go_highlight_operators = 1
+" These bindings will only run on .go files
+au! FileType go nmap <Leader>i <Plug>(go-info)
+au! FileType go nmap <Leader>s <Plug>(go-implements)
+au! FileType go nmap <Leader>e <Plug>(go-rename)
+au! FileType go let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+au! FileType go let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+" ----------------------------------------------------------------------------
+" >>> Vim-julia
+let g:latex_to_unicode_auto = 1
+" ----------------------------------------------------------------------------
+" >>> Vim-markdown
+let g:markdown_fenced_languages = ['html', 'python', 
+            \'bash=sh', 'javascript', 'sql', 'lisp']
+" Abbreviation to insert a new coloured todo
+ia :~ - [ ]
+au FileType markdown setl linebreak tw=80
+" ----------------------------------------------------------------------------
+" .: Utility :.
+" ----------------------------------------------------------------------------
+" >>> Command-T
+let g:CommandTFileScanner='git'
+" All work Files: Change to a directory of your choosing or add more
+nnoremap <Leader>fo :CommandT ~/Work/<CR>
+" Files in current git repo
+nnoremap <Leader>fp :GFiles<CR>
+" Files in current directory
+nnoremap <Leader>ff :CommandT<CR>
+" Recently edited files
+nnoremap <Leader>fh :CommandTHistory<CR>
+" Currently open buffers
+nnoremap <Leader>fb :CommandTBuffer<CR>
+" Search lines in current buffer
+nnoremap <Leader>bl :CommandTLine<CR>
+
+" ----------------------------------------------------------------------------
+" >>> NERDTree - file browser
+nnoremap \ :NERDTreeToggle<CR>
+" ----------------------------------------------------------------------------
+" >>> Syntastic - linting
+nnoremap <Leader>sf :SyntasticCheck flake8<CR>
+nnoremap <Leader>se :Errors<CR>
+nnoremap <Leader>sc :lclose<CR>
+let g:syntastic_python_python_exec = '/usr/bin/python3' 
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_auto_jump = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_loc_list_height=5
+" ----------------------------------------------------------------------------
+" .: Additional editing commands :.
+" >>> Commentary
+" Toggle commenting out the current line
+nnoremap <Leader>; :Commentary<CR>
+vnoremap <Leader>; :Commentary<CR>
+" ----------------------------------------------------------------------------
+" >>> Surround
+" cs<a><b> --> change surrounding <a>s for <b>s
+" ds<a>    --> delete surrounding <a>s
+" ysiw<a>  --> surround current word with <a>s
+" yss<a>   --> surround the current line with <a>s
+" ----------------------------------------------------------------------------
+" .: UI :.
+" >>> Vim-airline
+if !exists('g:airline_symbols')         " Powerline fonts seem to
+    let g:airline_symbols = {}          " mess up without this...
+endif
+let g:airline_symbols.space = "\ua0"
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_buffers = 1
+" ----------------------------------------------------------------------------
+" >>> Table Mode
+" <Leader>tm  --> enable/disables table mode
+" <Leader>tr  --> realign cells after an edit
+" <Leader>ts  --> sort the table by the current column
+" <Leader>tt  --> attempt to convert selection to a table
+" <Leader>tdd --> delete a row 
+" <Leader>tdc --> delete a column
+" <Leade>rtfa --> add a formula to the current cell
+" <Leader>tfe --> evaluate all formulae for the current table
+" [| ]| {| }| --> move one cell left, right, up, down (wraps)
+" i| a|       --> text objects for in and around a cell
+" ----------------------------------------------------------------------------
+" >>> Rainbow Parentheses
+au! VimEnter * RainbowParentheses
+" ----------------------------------------------------------------------------
+" >>> GitGutter
+" I don't want git functionality: that's what fugitive is for!
+let g:gitgutter_map_keys=0
+" ----------------------------------------------------------------------------
+
+
+"=============================================================================
+" .: Set colour-scheme and other UI related things :.
+" ___________________________________
+" | _____ |   | ___ | ___ ___ | |   | |
+" | |   | |_| |__ | |_| __|____ | | | |
+" | | | |_________|__ |______ |___|_| |
+" | |_|   | _______ |______ |   | ____|
+" | ___ | |____ | |______ | |_| |____ |
+" |___|_|____ | |   ___ | |________ | |
+" |   ________| | |__ | |______ | | | |
+" | | | ________| | __|____ | | | __| |
+" |_| |__ |   | __|__ | ____| | |_| __|
+" |   ____| | |____ | |__ |   |__ |__ |
+" | |_______|_______|___|___|___|_____|
+
+if has('nvim')
+  let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+endif
+
+if has('termguicolors')
+    " Use GUI true colours in the terminal
+    " NOTE: This means that you have to set gui{f|b}g instead of cterm{f|b}g
+    set termguicolors
+endif
+
+set background=dark
+
+" .: GRUVBOX :.
+let g:gruvbox_italic=1
+let g:gruvbox_bold=1
+let g:gruvbox_underline=1
+let g:gruvbox_undercurl=1
+let g:gruvbox_termcolors=256
+let g:gruvbox_contrast_dark='soft'
+let g:gruvbox_contrast_light='soft'
+colorscheme gruvbox
+let g:airline_theme='gruvbox'
+
+" .: OneDark :.
+" let g:onedark_terminal_italics=1
+" let g:onedark_termcolors=256
+" colorscheme onedark
+" let g:airline_theme='onedark'
+
+
+" Transparent background
+hi Normal guibg=none
+hi Comment guibg=none
+hi Normal ctermbg=none
+hi Comment ctermbg=none
+
+
+"=============================================================================
+
+" .: Auto-Commands :.
+" -------------------
+" Reload vimrc when it's saved
+autocmd! BufWritePost .vimrc source ~/.vimrc

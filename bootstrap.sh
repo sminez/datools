@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Install useful utilities
-sudo apt-get install zsh silversearcher-ag curl rofi git npm python3-pip
+sudo apt-get install npm python3-pip docker.io
 
 #######################
 # .: Install tools :. #
@@ -29,6 +29,11 @@ sudo python3 -m pip install csvkit
 # Binary :: docker, sen
 # Use    :: monitor and manage Docker
 # Docs   :: https://github.com/TomasTomecek/sen
-sudo apt-get install docker.io
 sudo python3 -m pip install urwid
 sudo python3 -m pip install sen
+
+
+# Binary :: pv
+# Use    :: cat with a progress bar (monitor progress in a pipeline)
+# Docs   :: http://www.ivarch.com/programs/pv.shtml
+sudo apt-get install pv

@@ -1,0 +1,178 @@
+#! usr/bin/python3
+import requests
+import argparse
+
+
+def print_dict(d, level=0):
+    '''
+    Convert a python dict to a pretty-print string.
+    Supports strings, nested dicts and lists as values.
+    '''
+    new_level = level + 1
+    section = ''
+    for _field, _value in d.items():
+        if type(_value) == dict:
+            section += 4 * new_level * ' '
+            section += '{}:\n'.format(_field)
+            section += print_dict(_value, new_level)
+        elif type(_value) == list:
+            section += 4 * new_level * ' '
+            section += '{}: '.format(_field)
+            section += print_list(_value, new_level) + '\n'
+        else:
+            s = '{}: {}\n'.format(_field, _value)
+            section += 4 * new_level * ' ' + s
+    return section
+
+
+def print_list(l, level=0):
+    '''
+    Convert a python list to a pretty-print string.
+    Supports strings, dicts and nested lists as values.
+    '''
+    new_level = level + 1
+    section = ''
+    for element in l:
+        if type(element) == dict:
+            section += '\n' + print_dict(element, new_level)
+        elif type(element) == list:
+            section += print_list(element, new_level)
+        else:
+            section += element + ', '
+    return section.strip(', ')
+
+
+def query_loggly(username=None, password=None, account=None, query=None,
+                 start='-24h', stop='now', order='desc', size=10, raw=False,
+                 output_json=False):
+    '''
+    Use the loggly HTTP api to pull data as json.
+    Defaults to the latest 10 matching events in the last day.
+    You need to provide your username, password and account name.
+    Query format details can be found here:
+        https://www.loggly.com/docs/search-query-language/
+    If raw=True is passed the raw response from Loggly is returned
+    (lots of metadata!), otherwise you only get the event message itself.
+    '''
+    if not all([username, password, account, query]):
+        raise ValueError(
+                'You must provide a username, password, account and query')
+
+    if order not in ('asc', 'desc'):
+        raise ValueError(
+                'Order must be "asc" or "desc"')
+
+    search_tmp = ("https://{}.loggly.com/apiv2/search?"
+                  "q={}&from={}&until={}&order={}&size={}")
+
+    rsid_resp = requests.get(
+            search_tmp.format(account, query, start, stop, order, size),
+            auth=(username, password))
+
+    if rsid_resp.status_code != 200:
+        print(rsid_resp.text)
+        raise RuntimeError(
+                'Got {} when contacting Loggly'.format(rsid_resp.status_code))
+
+    rsid = rsid_resp.json()['rsid']['id']
+    events_tmp = "https://{}.loggly.com/apiv2/events?rsid={}"
+    events = requests.get(
+            events_tmp.format(account, rsid),
+            auth=(username, password))
+
+    if events.status_code != 200:
+        raise RuntimeError(
+                'Got {} when contacting Loggly'.format(rsid_resp.status_code))
+
+    events = events.json()
+
+    if raw:
+        payload = events['events']
+    else:
+        payload = []
+        for event in events['events']:
+            payload.append(event['event']['json'])
+        return payload
+
+    if output_json:
+        print(payload)
+    else:
+        print_list(payload)
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '-u',
+    '--username',
+    type=str,
+    required=True,
+    help='your loggly username'
+)
+parser.add_argument(
+    '-p',
+    '--password',
+    type=str,
+    required=True,
+    help='your loggly password'
+)
+parser.add_argument(
+    '-a',
+    '--account',
+    type=str,
+    required=True,
+    help='your loggly account name'
+)
+parser.add_argument(
+    '-q',
+    '--query',
+    type=str,
+    required=True,
+    help='a loggly query string'
+)
+parser.add_argument(
+    '--start',
+    type=str,
+    default='-24',
+    help=('time to query from: '
+          'https://www.loggly.com/docs/search-query-language/#time')
+)
+parser.add_argument(
+    '--stop',
+    type=str,
+    default='now',
+    help=('time to query until: '
+          'https://www.loggly.com/docs/search-query-language/#time')
+)
+parser.add_argument(
+    '-o',
+    '--order',
+    type=str,
+    default='desc',
+    help='Order to display results in: asc/desc'
+)
+parser.add_argument(
+    '-n',
+    '--num',
+    type=int,
+    default=10,
+    help='number of results to fetch'
+)
+parser.add_argument(
+    '--raw',
+    action='store_true',
+    help='output loggly metadata'
+)
+parser.add_argument(
+    '--json',
+    action='store_true',
+    help='output as json'
+)
+
+args = parser.parse_args()
+
+r = query_loggly(username=args.username, password=args.password,
+                 account=args.account, query=args.query, start=args.start,
+                 stop=args.stop, order=args.order, size=args.num,
+                 raw=args.raw, output_json=args.json)
+
+print(r)
