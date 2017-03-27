@@ -13,8 +13,10 @@ cp ~/.bash-theme.sh bash-theme.sh
 cp ~/.i3blocks.conf i3blocks.conf
 
 # Config directories
+rm i3 zsh vim -rf
 cp ~/.i3 -r i3
 cp ~/.zsh -r zsh
 cp ~/.vim -r vim
 # Clear out the plugins themselves: they'll get pulled on :PlugInstall
 rm vim/plugged -rf
+rm vim/.netrwhist
