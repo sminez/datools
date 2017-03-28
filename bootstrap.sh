@@ -37,3 +37,9 @@ sudo python3 -m pip install sen
 # Use    :: cat with a progress bar (monitor progress in a pipeline)
 # Docs   :: http://www.ivarch.com/programs/pv.shtml
 sudo apt-get install pv
+
+
+# Binary :: gnuplot
+# Use    :: quick plotting of data (see 'plot' in /scripts)
+# Docs   :: http://www.gnuplot.info/
+sudo apt-get install gnuplot

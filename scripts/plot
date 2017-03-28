@@ -40,6 +40,9 @@ elif not sys.stdin.isatty():
     _, FILE = mkstemp()
     with open(FILE, 'w') as f:
         f.write(piped_input)
+else:
+    print('ERROR: unable to detect input', file=sys.stderr)
+    sys.exit(1)
 
 DELIM = args.delim
 X = args.xaxis
