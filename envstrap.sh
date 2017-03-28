@@ -11,7 +11,7 @@ sudo apt-get install software-properties-common
 sudo add-apt-repository ppa:neovim-ppa/stable
 sudo apt-get update
 sudo apt-get install zsh silversearcher-ag curl rofi git npm python3-pip \ 
-    docker.io ranger htop neovim tree uuid qualc gnuplot
+    docker.io ranger htop neovim tree uuid qualc gnuplot vlc feh mpv
 
 # Useful executable Python modules
 sudo python3 -m pip install --upgrade pip
@@ -25,3 +25,18 @@ go get github.com/pcarrier/gauth/ # gauth 2 factor auth tool
 # fzf fuzzy search
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
+
+
+##########################
+# Silly and/or fun stuff #
+##########################
+# Reddit terminal viewer :: rtv
+# https://github.com/michael-lazar/rtv
+sudo python3 -m pip install --upgrade html5lib==1.0b8
+sudo python3 -m pip install rtv
+
+# Google from the command line :: google (alias in my zshrc)
+# https://github.com/jarun/googler
+sudo curl -o /usr/local/bin/googler \
+    https://raw.githubusercontent.com/jarun/googler/v3.0/googler \
+    && sudo chmod +x /usr/local/bin/googler
