@@ -40,3 +40,7 @@ sudo python3 -m pip install rtv
 sudo curl -o /usr/local/bin/googler \
     https://raw.githubusercontent.com/jarun/googler/v3.0/googler \
     && sudo chmod +x /usr/local/bin/googler
+
+# Command line twitter :: rainbowstream / twitter (my alias)
+# https://github.com/DTVD/rainbowstream
+sudo python3 -m pip install rainbowstream
