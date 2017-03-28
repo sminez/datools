@@ -1,0 +1,66 @@
+#! /usr/bin/python3
+'''
+Take the contents of a csv or piped input from stdin and plot using gnuplot.
+Requires gnuplot to be installed (obviously!)
+'''
+import sys
+from subprocess import call
+from tempfile import mkstemp
+from argparse import ArgumentParser
+
+
+parser = ArgumentParser()
+parser.add_argument(
+    '-d',
+    '--delim',
+    type=str,
+    default=',',
+    required=False,
+    help='Column deliminator in input file.'
+)
+parser.add_argument(
+    '-x',
+    '--xaxis',
+    type=int,
+    default=1,
+    required=False,
+    help='Column to use as the x-axis of the plot.'
+)
+parser.add_argument(
+    'file',
+    nargs='?'
+)
+args = parser.parse_args()
+
+# Make a temp file if we need it and handle piped input
+if args.file:
+    FILE = args.file
+elif not sys.stdin.isatty():
+    piped_input = sys.stdin.read()
+    _, FILE = mkstemp()
+    with open(FILE, 'w') as f:
+        f.write(piped_input)
+
+DELIM = args.delim
+X = args.xaxis
+
+# Fetch column names
+with open(FILE, 'r') as f:
+    first_line = f.readline()
+    COLNAMES = first_line.split(DELIM)
+
+# Templates for building the gnuplot command string
+PLOT_CMD = "set datafile separator '{}'; plot ".format(DELIM)
+LINE = "'{}' using {}:{} title '{}' w l, "
+
+if len(COLNAMES) < 2:
+    print('ERROR: Not enough columns to plot', file=sys.stderr)
+    sys.exit(1)
+
+for ix, colname in enumerate(COLNAMES):
+    # Make sure that we don't plot (x, x)
+    if ix + 1 != X:
+        PLOT_CMD += LINE.format(FILE, X, ix + 1, colname)
+
+retcode = call(['gnuplot', '-p', '-e', PLOT_CMD])
+sys.exit(retcode)
