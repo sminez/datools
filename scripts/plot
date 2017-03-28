@@ -27,6 +27,12 @@ parser.add_argument(
     help='Column to use as the x-axis of the plot.'
 )
 parser.add_argument(
+    '-t',
+    '--terminal',
+    action='store_true',
+    help='Plot in the terminal, not in a graphical window.'
+)
+parser.add_argument(
     'file',
     nargs='?'
 )
@@ -54,6 +60,8 @@ with open(FILE, 'r') as f:
 
 # Templates for building the gnuplot command string
 PLOT_CMD = "set datafile separator '{}'; plot ".format(DELIM)
+if args.terminal:
+    PLOT_CMD = 'set term dumb; ' + PLOT_CMD
 LINE = "'{}' using {}:{} title '{}' w l, "
 
 if len(COLNAMES) < 2:
