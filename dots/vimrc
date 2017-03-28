@@ -81,10 +81,12 @@ Plug 'gonzaloserrano/vim-markdown-todo' " Add todo boxes to markdown files
 
 " .: Utility :.
 " Fuzzy file finder that has a nice interface
-Plug 'tpope/vim-vinegar'                " Hit `-` for a directory listing (uses Nerdtee if installed)
+Plug 'rbgrouleff/bclose.vim'            " Required for ranger
+Plug 'francoiscabrol/ranger.vim'        " Nice file browser with preview
+" Plug 'tpope/vim-vinegar'                " Hit `-` for a directory listing (uses Nerdtee if installed)
+" Plug 'scrooloose/nerdtree'              " File browser
 Plug 'ervandew/supertab'                " Tab now works for auto-completion
 Plug 'tpope/vim-fugitive'               " Improved git interaction
-Plug 'scrooloose/nerdtree'              " File browser
 Plug 'scrooloose/syntastic'             " Syntax checking
 Plug 'wincent/command-t', {'do': 'cd ruby/command-t && ruby extconf.rb && make'}
 
@@ -94,7 +96,6 @@ Plug 'tpope/vim-commentary'             " Quick comment/uncomment
 
 " .: Colour Schemes :.
 Plug 'morhetz/gruvbox'                  " Low contrast, awesome theme
-Plug 'joshdick/onedark.vim'             " Port of the Atom theme
 
 " .: UI :.
 Plug 'lilydjwg/colorizer'               " colour preview for #rrggbb
@@ -320,7 +321,12 @@ nnoremap <Leader>bl :CommandTLine<CR>
 
 " ----------------------------------------------------------------------------
 " >>> NERDTree - file browser
-nnoremap \ :NERDTreeToggle<CR>
+" nnoremap \ :NERDTreeToggle<CR>
+
+" ----------------------------------------------------------------------------
+" >>> Ranger - file browser
+let g:ranger_map_keys = 0
+nnoremap \ :RangerWorkingDirectory<CR>
 " ----------------------------------------------------------------------------
 " >>> Syntastic - linting
 nnoremap <Leader>sf :SyntasticCheck flake8<CR>

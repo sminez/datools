@@ -8,8 +8,7 @@
 # Set base16 colours
 # BASE16_SHELL=$HOME/.config/base16-shell/
 # [ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
-
-source ~/Dotfiles/gruv-term.sh
+source ~/datools/dots/gruv-term.sh
 
 # Set gruvbox based colors for vim
 source ~/.vim/plugged/gruvbox/gruvbox_256palette.sh
@@ -23,7 +22,7 @@ source ~/Dotfiles/antigen/antigen.zsh
 # Plugins to load
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-history-substring-search
-antigen bundle zsh-users/zsh-autosuggestions
+# antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-completions src
 
 antigen apply
@@ -56,7 +55,7 @@ typeset -U PATH path cdpath fpath manpath
 # .: Go :. #
 ############
 export GOPATH=$HOME/GO_PATH
-export PATH=$GOPATH/bin:$PATH:/home/innes/julia-install/bin:/usr/local/go/bin:$PATH
+export PATH=$GOPATH/bin:$PATH:/usr/local/go/bin:$HOME/datools/bin:$HOME/datools/scripts
 export GOROOT="/usr/local/go"
 export GOBIN=$GOPATH/bin
 
@@ -154,6 +153,7 @@ alias aptcheck='aptitude full-upgrade --simulate --assume-yes'
 alias aptupdate='sudo aptitude full-upgrade --assume-yes'
 alias fixmpd='sudo service mpd stop && sudo update-rc.d mpd disable && mpd'
 alias clearswp='rm ~/.local/share/nvim/swap/*.swp'
+alias fixsound='alsactl restore'
 
 # Python shortcuts
 alias ptp="ptpython"
