@@ -1,5 +1,9 @@
 #! /bin/bash
 
+# TODO:: look at the following
+# https://github.com/google/crush-tools
+# http://search.cpan.org/~dkogan/feedgnuplot-1.41/bin/feedgnuplot
+
 # Install useful utilities
 sudo apt-get install npm python3-pip docker.io
 
@@ -11,6 +15,7 @@ sudo apt-get install npm python3-pip docker.io
 # Docs   :: https://stedolan.github.io/jq/manual/
 sudo apt-get install jq
 
+
 # Binary :: j2v    (Changed from default)
 # Use    :: convert json to csv format (can flatten nested structures)
 # Docs   :: https://github.com/zemirco/json2csv#command-line-interface
@@ -18,6 +23,7 @@ sudo npm install json2csv --save -g
 # Need to edit the shebang to point at /usr/bin/nodejs
 sed -i 's:#! /usr/bin/env node:#! /usr/bin/nodejs:' /usr/local/bin/json2csv
 mv /usr/local/bin/json2csv /usr/local/bin/j2v
+
 
 # Binaries :: in2csv, sql2csv, csvclean, csvcut, csvgrep, csvsql, csvjson,
 #             csvstat, csvjoin, csvstack, csvformat, csvpy, csvlook
