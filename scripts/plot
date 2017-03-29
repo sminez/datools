@@ -47,6 +47,14 @@ parser.add_argument(
     help='Column deliminator in input file.'
 )
 parser.add_argument(
+    '-t',
+    '--title',
+    type=str,
+    default='',
+    required=False,
+    help='Set the plot title: defaults to the file name'
+)
+parser.add_argument(
     '-x',
     '--xaxis',
     type=int,
@@ -55,16 +63,28 @@ parser.add_argument(
     help='Column to use as the x-axis of the plot.'
 )
 parser.add_argument(
-    '-t',
-    '--terminal',
-    action='store_true',
-    help='Plot in the terminal, not in a graphical window.'
+    '-l',
+    '--ylabel',
+    type=str,
+    default='',
+    required=False,
+    help='Set the y-axis label.'
 )
 parser.add_argument(
-    '-l',
+    '-A',
+    '--ascii',
+    action='store_true',
+    help='Plot in the terminal using ascii.'
+)
+parser.add_argument(
     '--logy',
     action='store_true',
     help='Plot with a log y axis'
+)
+parser.add_argument(
+    '--logx',
+    action='store_true',
+    help='Plot with a log x axis'
 )
 parser.add_argument(
     'file',
@@ -86,22 +106,30 @@ else:
 
 DELIM = args.delim
 X = args.xaxis
+TITLE = args.title if args.title else FILE
+TITLE = TITLE.replace('_', ' ')
 
 # Fetch column names
 with open(FILE, 'r') as f:
     first_line = f.readline()
     COLNAMES = first_line.split(DELIM)
+    X_LABEL = COLNAMES[X-1].replace('_', ' ')
+    Y_LABEL = args.ylabel
 
 # Templates for building the gnuplot command string
 tmp = ("set datafile separator '{}'; "
-       "set title '{}';"
-       "set key outside Left box 3"
+       "set title '{}'; "
+       "set xlabel '{}'; "
+       "set ylabel '{}'; "
+       "set key top Left box 3"
        "set title 'Key'; plot"
        )
-PLOT_CMD = tmp.format(DELIM, FILE)
+PLOT_CMD = tmp.format(DELIM, TITLE, X_LABEL, Y_LABEL)
 if args.logy:
     PLOT_CMD = 'set logscale y; ' + PLOT_CMD
-if args.terminal:
+if args.logx:
+    PLOT_CMD = 'set logscale x; ' + PLOT_CMD
+if args.ascii:
     PLOT_CMD = 'set term dumb; ' + PLOT_CMD
 LINE = "'{}' using {}:{} title '{}' w l, "
 
