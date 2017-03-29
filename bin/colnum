@@ -1,0 +1,13 @@
+#! /usr/bin/awk -f
+# --------------------------------------------------------------
+# colnum :: number the columns of a .csv style deliminate file.
+# --------------------------------------------------------------
+# colnum assumes that the input is csv-like (deliminated columns
+# of data) and prints the first line of the file along side the
+# corresponding column number.
+# It is intended for quickly finding the relevant column numbers
+# required for further commands such as awk scripts, plotting,
+# joins etc.
+# --------------------------------------------------------------
+
+NR==1 { n = split($0, a); for (i=0; ++i <=n;) print "    ", i, a[i] }

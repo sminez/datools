@@ -32,3 +32,6 @@ _s/dragons/useful day to day utilities/_
 - _bin_ contains reuable utilites.
 - _scripts_ contains scripts that may/may not be composable.
 - _notes_ contains some examples and thoughts on how I use this stuff.
+- _scratch_ contains work in progress/rough ideas and previous versions of
+  programs that are still useful as reference for future work. (All contents of
+  scratch should be considered fair game for deletion!)

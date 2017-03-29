@@ -1,10 +1,5 @@
 #! /bin/bash
 # Enumerate the columns of a csv :: default to using comma as the separator
-#
-# Alternate awk based versions
-# ----------------------------
-# awk -F "${DELIM}" 'NR==1{n = split($0, a); for (i=0; ++i <=n;) print i, a[i]}' $FILE
-# awk -F "${DELIM}" '{ OFS=RS; NR==1; $1=$1 } 1' $FILE | nl
 
 usage() {
     echo "coln :: Enumerate the columns of a csv"
