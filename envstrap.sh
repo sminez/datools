@@ -58,3 +58,8 @@ sudo apt-get install irssi
 # Cli Email :: mutt
 # https://wiki.archlinux.org/index.php/mutt
 sudo apt-get install mutt
+
+
+# CLI RSS :: newsbeuter
+# http://www.newsbeuter.org/doc/newsbeuter.html
+sudo apt-get install newsbeuter
