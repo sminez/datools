@@ -2,10 +2,11 @@
 
 # TODO:: look at the following
 # https://github.com/google/crush-tools
-# http://search.cpan.org/~dkogan/feedgnuplot-1.41/bin/feedgnuplot
 
 # Install useful utilities
 sudo apt-get install npm python3-pip docker.io
+# node scripts seem to disagree on the location of node...
+sudo ln -s /usr/bin/nodejs /usr/bin/node
 
 #######################
 # .: Install tools :. #

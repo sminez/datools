@@ -44,3 +44,9 @@ sudo curl -o /usr/local/bin/googler \
 # Command line twitter :: rainbowstream / twitter (my alias)
 # https://github.com/DTVD/rainbowstream
 sudo python3 -m pip install rainbowstream
+
+# cli SO :: how2 (-l <lang>)
+# https://github.com/santinic/how2
+sudo npm install -g how2
+
+
