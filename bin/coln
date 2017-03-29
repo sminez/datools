@@ -1,13 +1,15 @@
 #! /bin/bash
-
 # Enumerate the columns of a csv :: default to using comma as the separator
+#
+# Alternate awk based version
+# ---------------------------
+# awk -F "${DELIM}" 'NR==1{n = split($0, a); for (i=0; ++i <=n;) print i, a[i]}' $FILE
 
 usage() {
     echo "coln :: Enumerate the columns of a csv"
     echo "--------------------------------------"
     echo ""
     echo "  -d  set the field deliminator. (default: ',')"
-    echo "  -n  disable eunumeration and just show column names"
     echo "  -h  display this help message"
     echo ""
 }
@@ -15,12 +17,10 @@ usage() {
 DELIM=","
 SHOW_NUMS=true
 
-while getopts ':hnd:' opt; do
+while getopts ':hd:' opt; do
     case "${opt}" in
         d)
             DELIM="${OPTARG}" ;;
-        n)
-            SHOW_NUMS=false ;;
         h | *)
             usage
             exit 0 ;;
@@ -35,11 +35,4 @@ if [ "$FILE" = "" ]; then
     exit 1
 fi
 
-COLNAMES=$(head $FILE -n 1)
-if [ $SHOW_NUMS = true ]; then
-    CMD='{n = split($0, a); for (i=0; ++i <=n;) print i, a[i]}'
-else
-    CMD='{n = split($0, a); for (i=0; ++i <=n;) print a[i]}'
-fi
-
-awk -F "${DELIM}" "${CMD}" <<< ${COLNAMES}
+head -n 1 $FILE | tr ${DELIM} '\n' | nl
