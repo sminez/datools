@@ -50,3 +50,11 @@ sudo python3 -m pip install rainbowstream
 sudo npm install -g how2
 
 
+# IRC :: irssi
+# https://irssi.org/documentation/
+# http://studioidefix.com/2015/07/31/slack-irssi-integration/
+sudo apt-get install irssi
+
+# Cli Email :: mutt
+# https://wiki.archlinux.org/index.php/mutt
+sudo apt-get install mutt
