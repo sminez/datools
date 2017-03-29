@@ -93,7 +93,12 @@ with open(FILE, 'r') as f:
     COLNAMES = first_line.split(DELIM)
 
 # Templates for building the gnuplot command string
-PLOT_CMD = "set datafile separator '{}'; plot ".format(DELIM)
+tmp = ("set datafile separator '{}'; "
+       "set title '{}';"
+       "set key outside Left box 3"
+       "set title 'Key'; plot"
+       )
+PLOT_CMD = tmp.format(DELIM, FILE)
 if args.logy:
     PLOT_CMD = 'set logscale y; ' + PLOT_CMD
 if args.terminal:
@@ -107,7 +112,7 @@ if len(COLNAMES) < 2:
 for ix, colname in enumerate(COLNAMES):
     # Make sure that we don't plot (x, x)
     if ix + 1 != X:
-        PLOT_CMD += LINE.format(FILE, X, ix + 1, colname)
+        PLOT_CMD += LINE.format(FILE, X, ix + 1, colname.replace('_', ' '))
 
 retcode = call(['gnuplot', '-p', '-e', PLOT_CMD])
 sys.exit(retcode)
