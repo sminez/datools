@@ -18,3 +18,30 @@ With the patterns being applied as follows:
                     perform the action
 
 -------------------------------------------------------------------------------
+
+# AWK scripts as programs
+While the quick and easy way to use awk is as a command like grep or sed:
+
+```bash
+$ cat my-data | awk -F, '{ print $1,$2 }'
+```
+
+Awk scripts can be made executable with the following shebang line:
+
+```bash
+#! /usr/bin/awk -f
+```
+
+The -f flag is required to tell awk that the file is to be treated as an input
+script rather than a data file to be processed. As the result is a running awk
+process, the standard awk command line flags can be used: `-F,` to set the
+deliminator as commas for example.
+
+-------------------------------------------------------------------------------
+
+# BEGIN and END
+BEGIN and END are special patterns that are run before processing any input and
+after processing _all_ input. They are useful for setting up variables and
+computing summaries etc.
+
+-------------------------------------------------------------------------------
