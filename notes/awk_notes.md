@@ -51,50 +51,51 @@ FS : Field separator
 - Sets which character awk will use for splitting lines into fields(/columns).
   This can also be set using the `-F` flag. It can actually take a regular
   expression, allowing you to use multiple separators:
-
+```
     { FS = "\t" }       # Fields deliminated by tabs
     { FS = "-|,|." }    # Fields deliminated by - , and .
-
+```
 OFS : Ouput Field Separator
 - Sets the character used by the print statement to deliminate output fields. By
   default this is a single space:
-
+```
     { OFS = " --> " }
-
+```
 RS : Record Separator
 - By default, awk operates on lines in files as RS is set to '\n'. Changing this
   allows you to process data in other formats. (You will probably need to change
   FS as well!)
-
+```
     { RS = "\n\n"; FS = "\n" }
-
+```
 ORS : Output Record Separator
 - Same relation to RS as OFS to FS.
-
+```
     { ORS = "\n\n" }
-
+```
 NR : Number of Records
 - Essentially the loop variable for the implicit master loop described above.
   With default settings this can be though of as the current line number being
   processed. In an END block, NR will have the value of the total number of
   records processed. (Changing RS will obviously change this behaviour as well!)
-
+```
     awk '{ print "This is line ",NR } END { print "There were ",NR," records" }'
-
+```
 NF : Number of Fields
 - This gives you the total number of Fields in the current record. The following
   example would print out the number of Fields per line in the input file:
-
+```
     awk '{ print NR," --> ",NF }' input_file
-
+```
 FILENAME : The Current File Name...
 - Useful for when you are processing multiple files at once or if you want to
   include the file name in the script output. The following - super useful -
   script will print the file name once for each line in the file.
-
+```
     awk '{print FILENAME}' input_file
-
+```
 FNR : File Number of Records
 - Same idea as the NR variable but this one resets at the start of each file.
-
+```
     awk '{ print "This is line ",FNR," for the file and ",NR," in total" }'
+```
