@@ -83,8 +83,8 @@ Plug 'gonzaloserrano/vim-markdown-todo' " Add todo boxes to markdown files
 " Fuzzy file finder that has a nice interface
 Plug 'rbgrouleff/bclose.vim'            " Required for ranger
 Plug 'francoiscabrol/ranger.vim'        " Nice file browser with preview
-" Plug 'tpope/vim-vinegar'                " Hit `-` for a directory listing (uses Nerdtee if installed)
-" Plug 'scrooloose/nerdtree'              " File browser
+Plug 'tpope/vim-vinegar'                " Hit `-` for a directory listing (uses Nerdtee if installed)
+Plug 'scrooloose/nerdtree'              " File browser
 Plug 'ervandew/supertab'                " Tab now works for auto-completion
 Plug 'tpope/vim-fugitive'               " Improved git interaction
 Plug 'scrooloose/syntastic'             " Syntax checking

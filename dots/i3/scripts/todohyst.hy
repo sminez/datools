@@ -1,4 +1,4 @@
-#!/usr/local/bin/hy
+#!/usr/bin/hy
 (import json)
 (import requests)
 (import [urllib.parse :as parse])

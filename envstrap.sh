@@ -13,6 +13,9 @@ sudo apt-get update
 sudo apt-get install zsh silversearcher-ag curl rofi git npm python3-pip \ 
     docker.io ranger htop neovim tree uuid qualc gnuplot vlc feh mpv
 
+# Fetch antigen for zsh plugins
+curl -L git.io/antigen > ~/.zsh/antigen.zsh
+
 # Useful executable Python modules
 sudo python3 -m pip install --upgrade pip
 sudo python3 -m pip install requests jedi ptpython awscli aws-mfa jupyter \

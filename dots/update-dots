@@ -11,12 +11,21 @@ cp ~/.vimrc vimrc
 cp ~/.Xresources Xresources
 cp ~/.bash-theme.sh bash-theme.sh
 cp ~/.i3blocks.conf i3blocks.conf
+cp ~/.mailcap mailcap
+cp ~/.gitconfig gitconfig
+cp ~/.urlview urlview
+cp ~/.newsbeuter/urls newsbeuter-urls
 
 # Config directories
 rm i3 zsh vim -rf
 cp ~/.i3 -r i3
 cp ~/.zsh -r zsh
 cp ~/.vim -r vim
+cp ~/.emacs.d -r emacs.d
+
+# Clear out antigen and repull in envstrap.sh
+rm zsh/antigen.zsh
+
 # Clear out the plugins themselves: they'll get pulled on :PlugInstall
 rm vim/plugged -rf
 rm vim/.netrwhist

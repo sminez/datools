@@ -1,0 +1,9 @@
+[user]
+	name = sminez
+	email = innes.morrison@cocoon.life
+[push]
+	default = simple
+[pull]
+	rebase = true
+[core]
+	editor = vim

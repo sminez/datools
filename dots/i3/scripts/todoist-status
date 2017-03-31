@@ -1,0 +1,44 @@
+#! /usr/bin/python3
+import os
+import json
+import requests
+import urllib.parse as parse
+
+
+HOME = os.environ['HOME']
+URL = 'https://todoist.com/API/v7/sync'
+
+with open('{}/.i3/todoist-token'.format(HOME)) as f:
+    token = f.readline()
+
+
+def query(query_str):
+    '''Return a count of the number of tasks meeting the query string'''
+    queries = query_str.split(',')
+    params = [('token', token), ('queries', json.dumps(queries))]
+    req_url = '{}/query?{}'.format(URL, parse.urlencode(params))
+    print(req_url)
+    resp = requests.get(req_url)
+    print(resp)
+    json_resp = resp.json()
+    count = sum(len(jr['data']) for jr in json_resp)
+    return count
+
+
+if __name__ == '__main__':
+    # Generate a formatted, pango coloured output for use with i3blocks
+    over = query('overdue')
+    today_and_over = query('today')
+    coming_week = query('overdue,mon,tues,wed,thurs,fri,sat,sun')
+
+    if over > 0:
+        colour = '#cb6077'
+    elif (today_and_over > 0) and (coming_week > 0):
+        colour = '#f4bc87'
+    elif (today_and_over == 0) and (coming_week > 0):
+        colour = '#7bbda4'
+    else:
+        colour = '#beb55b'
+
+    print("<span foreground='{}'> {}/{}/{}</span>".format(
+            colour, over, today_and_over, coming_week))

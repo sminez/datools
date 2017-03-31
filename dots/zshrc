@@ -17,7 +17,7 @@ source ~/.vim/plugged/gruvbox/gruvbox_256palette.sh
 ####################################################################
 # {-- Anitgen setup and package management --} #
 ################################################
-source ~/Dotfiles/antigen/antigen.zsh
+source ~/.zsh/antigen.zsh
 
 # Plugins to load
 antigen bundle zsh-users/zsh-syntax-highlighting
@@ -110,12 +110,12 @@ source ~/.zsh/zcomp.zsh
 # {-- Aliases --} #
 ###################
 
-# .: Editors :.
+# Editors
 alias vim="nvim"
 alias vi="nvim"
 # alias e="/usr/bin/emacsclient -nw"
 
-# config editing
+# Config editing
 alias zre="source ~/.zshrc"
 alias zcon="vim ~/.zshrc"
 alias vcon="vim ~/.vimrc"
@@ -130,13 +130,14 @@ alias lsa='ls -a'
 alias la='ls -a'
 alias lsl='ls -oh'
 
-# navigation shortcuts
+# Navigation shortcuts
 alias cd..="cd .."
 alias ..="cd .."
 # Quick jump to the Python3.5 stdlib modules
 alias cdp='cd /usr/lib/python3.5/'
 
-# search shortcuts
+# Search shortcuts
+alias grep='grep --color=auto'
 alias ag="ag --hidden --ignore .git --pager less"  # NOTE:: other aliases inherit these!
 alias agg="ag -g"  # Find files with names matching a regex
 alias agc="ag -c"  # Display number of matches per file
@@ -145,9 +146,16 @@ alias agf="ag -l --nocolor"  # Disiplay filenames containing pattern (pipeable)
 alias agl="ag --hidden -l --nocolor --ignore .git"  # List files matching a pattern
 alias agL="ag --hidden -L --nocolor --ignore .git"  # List files not matching a pattern
 
-
 # Assorted utility shortcuts
 alias sagi='sudo apt-get install'
+alias o='xdg-open'
+alias p='ps ax | grep'
+alias ggl='googler --np'
+alias twt='rainbowstream -iot'
+alias tree='tree -C'
+alias dtree='tree -d'
+
+# Quick shortcuts for system fixes and updates
 alias fixapt='sudo rm /var/lib/apt/lists/* -vf'
 alias aptcheck='aptitude full-upgrade --simulate --assume-yes'
 alias aptupdate='sudo aptitude full-upgrade --assume-yes'
@@ -158,6 +166,7 @@ alias fixsound='alsactl restore'
 # Python shortcuts
 alias ptp="ptpython"
 alias virtualenv="python3 -m virtualenv"
+alias spip="sudo -H python3 -m pip"
 
 # Conda shortcuts to avoid having conda clobber the path
 alias cpy3="~/anaconda3/bin/python3.6"
