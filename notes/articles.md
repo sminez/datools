@@ -12,6 +12,7 @@ Interesting articles
 - [Interesting One Liners](https://www.quora.com/What-are-the-most-useful-Swiss-army-knife-one-liners-on-Unix?share=1)
 - [Some Less Commonly Used Commands](https://danielmiessler.com/blog/collection-of-less-commonly-used-unix-commands/#gs.xW4fUl4)
 - [Google's Shell Style Guide](https://google.github.io/styleguide/shell.xml)
+- [Structured Text Tools](https://github.com/dbohdan/structured-text-tools)
 
 # Data/Computer Science
 - [Top Data Science Resources](http://mlwhiz.com/blog/2017/03/26/top_data_science_resources_on_the_internet_right_now/)

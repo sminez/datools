@@ -115,7 +115,7 @@ _match_ the start of input and the end of input.
   include the file name in the script output. The following - super useful -
   script will print the file name once for each line in the file.
 ```
-    awk '{print FILENAME}' input_file
+    awk '{ print FILENAME }' input_file
 ```
 #### FNR : File Number of Records
 - Same idea as the NR variable but this one resets at the start of each file.
