@@ -172,3 +172,26 @@ the `nl` program to give you a numbered list of occurrances.
 
 _NOTE:: the shell command that you are piping to must be enclosed in double
 quotes!_
+
+There is a subtle gotcha with this however:
+```
+    /^1/ { print "started with 1" | "nl" }
+    /^2/ { print "started with 2" }
+```
+In this program, the `"started with 2"` lines will print _before_ the `"started
+with 1"` lines as _all_ of the input for the pipe is collected and sent once the
+file has been processed.
+```
+    /^1/ { print "started with 1" | "nl" }
+    /^2/ { print "started with 2" | "cat" }
+```
+This one has the same behavour again.
+```
+    /^1/ { print "started with 1" | "nl" }
+    /^2/ { print "started with 2" | "grep 2" }
+```
+Whereas _this_ program will print in what would be the expected order...! It
+looks like the behaviour is down to the program being piped to: if the target of
+the pipe requires full output then it will block and only run at the end of the
+awk program. In this case, the output of the blocked programs seem to be displayed
+in sequence.
