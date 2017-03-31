@@ -58,8 +58,12 @@ deliminator as commas for example.
 ### BEGIN and END
 BEGIN and END are special patterns that are run before processing any input and
 after processing _all_ input. They are useful for setting up variables and
-computing summaries etc.
-
+computing summaries etc:
+```
+    BEGIN { print "Summing column 2 for lines starting with '1'" }
+    '/^1/ { sum += $2 }
+    END { print sum }'
+```
 Note that they really are patterns in the same sense as other awk patterns: they
 _match_ the start of input and the end of input.
 
@@ -134,6 +138,11 @@ With the standard wildcards and special characters you would expect. Note that
 `^` and `$` match the start and end of _records_ depending on how you have
 defined records via the RS variable. (By default, RS = '\n' so `^` and `$` match
 begining and end of line as you would expect.)
+
+You can also use the `~` and `!~` opertors to regex against fields:
+```
+    $1 ~ /^only this$/ { print "found a match!" }
+```
 
 -------------------------------------------------------------------------------
 
