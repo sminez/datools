@@ -48,12 +48,12 @@ The one-minute version:
 
 Future features:
   - "$n ~ /regex/" or "$n !~ /regex/" for comparison to individual fields
+  - /one/.../two/ regex range?
   - Allow assigning of RS, OFS and ORS.
 '''
 _tags = [
-    ('ACTION', r'\{.*\}$'),
-    ('WHITESPACE', r'\s'),
     ('PATTERN', r'^.*(?=\s+\{)'),
+    ('ACTION', r'\{.*\}$'),
 ]
 
 
@@ -163,10 +163,8 @@ class Pattern:
             tag = match.lastgroup
             group = [g for g in match.groups() if g is not None]
             text = group[1] if len(group) == 2 else match.group(tag)
-            if tag == 'WHITESPACE':
-                pass
 
-            elif tag == 'PATTERN':
+            if tag == 'PATTERN':
                 if self._pattern is not None:
                     err = 'ERROR: Multiple patterns on one line:\n"{}"'
                     print(err.format(line), file=sys.stderr)
