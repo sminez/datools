@@ -50,7 +50,6 @@ The one-minute version:
 Future features:
   - "$n ~ /regex/" or "$n !~ /regex/" for comparison to individual fields
   - Allow assigning of RS, OFS and ORS.
-  - Implicit variable creation at first assignment.
 '''
 
 _tags = [
@@ -61,6 +60,32 @@ _tags = [
 Token = namedtuple('token', ['tag', 'val'])
 
 
+def eval_or_exec(code, VARS, LINE, FIELDS, NR, FNR, NF):
+    '''
+    Try to resolve name and import errors while executing the given
+    code snippet, returning any results generated.
+    '''
+    while True:
+        try:
+            if re.search('(?!<[=><!])=', code):
+                # TODO: find a proper way to check for statements!
+                result = exec(code, globals(), VARS)
+            else:
+                result = eval(code, globals(), VARS)
+            return result, VARS
+        except NameError as namerr:
+            # namerr.args == ("name 'NAME' is not defined",)
+            try:
+                name = namerr.args[0].split()[1][1:-1]
+                exec("{n} = __import__('{n}')".format(n=name), globals(), VARS)
+            except ImportError:
+                if VARS.get(name) is None:
+                    exec("{} = 0".format(name), globals(), VARS)
+        except IndexError:
+            # TODO: Find a way of identifying $n index errors only
+            return None, VARS
+
+
 class Script:
     '''A pyk script'''
     def __init__(self, script_str, FS=' ', RS='\n', OFS=' ', ORS='\n'):
@@ -68,13 +93,13 @@ class Script:
         self.RS = RS
         self.OFS = OFS
         self.ORS = ORS
+        self.BEGIN = None
+        self.END = None
         self.patterns = []
-        self.BEGIN = []
-        self.END = []
 
         has_END = False
 
-        for ix, line in enumerate(re.split(';;', script_str)):
+        for ix, line in enumerate(re.split(';;|\n', script_str)):
             line = line.strip()  # remove whitespace
             if has_END:
                 err = 'ERROR: END not final pattern:\n{}'
@@ -82,7 +107,7 @@ class Script:
                 sys.exit(1)
 
             if line.startswith('BEGIN'):
-                if self.BEGIN != []:
+                if self.BEGIN is not None:
                     err = 'ERROR: Multiple BEGIN patterns found:\n{}'
                     print(err.format(line), file=sys.stderr)
                     sys.exit(1)
@@ -91,14 +116,14 @@ class Script:
                     print(err.format(line), file=sys.stderr)
                     sys.exit(1)
                 else:
-                    self.BEGIN = Pattern(line)._actions
+                    self.BEGIN = Pattern(line)
             elif line.startswith('END'):
-                if self.END != []:
+                if self.END is not None:
                     err = 'ERROR: Multiple END patterns found:\n{}'
                     print(err.format(line), file=sys.stderr)
                     sys.exit(1)
                 else:
-                    self.END = Pattern(line)._actions
+                    self.END = Pattern(line)
             else:
                 self.patterns.append(Pattern(line))
 
@@ -164,7 +189,12 @@ class Pattern:
                 # Split python into statements
                 self._actions.extend(text.split(';'))
 
-    def match(self, LINE, FIELDS, NR, FNR, NF):
+    def match(self, VARS, LINE, FIELDS, NR, FNR, NF):
+        '''
+        Very simple pattern evaluation: regexes are checked against the
+        entire line (TODO:: allow field comparisons) and other conditions
+        are simply evalated and returned as a bool.
+        '''
         if self._pattern is None:
             return True
         elif self.is_regex:
@@ -179,26 +209,21 @@ class Pattern:
                 # Errors in a pattern are a mismatch
                 return False
 
-    def action(self, LINE, FIELDS, NR, FNR, NF):
+    def action(self, VARS, LINE, FIELDS, NR, FNR, NF):
+        '''
+        Attempt to carry out the action. There are a few annoying edge cases
+        where evaluation of statements vs expressions mess things up at the
+        moment...
+        '''
         if self._actions is None:
             print(LINE)
         else:
             for action in self._actions:
-                # Try to resolve import errors until it runs...!
-                while True:
-                    try:
-                        result = eval(action)
-                        # Allow for implicit printing of results
-                        if result is not None:
-                            print(result)
-                        break
-                    except NameError as namerr:
-                        # namerr.args == ("name 'MODULE' is not defined",)
-                        module = namerr.args[0].split()[1][1:-1]
-                        exec("{m} = __import__('{m}')".format(m=module))
-                    except IndexError:
-                        # TODO: Find a way of identifying $n index errors only
-                        break
+                result, VARS = eval_or_exec(
+                        action, VARS, LINE, FIELDS, NR, FNR, NF
+                    )
+                if result is not None:
+                    print(result)
 
 
 if __name__ == '__main__':
@@ -229,6 +254,7 @@ if __name__ == '__main__':
 
     # Parse script pattern/action pairs
     script = Script(args.script, args.field_separator)
+    VARS = {}  # NOTE: This is the pyk internal state
     NR = 0
     FNR = 0
     NF = 0
@@ -237,8 +263,8 @@ if __name__ == '__main__':
     FIELDS = []
 
     # Evaluate BEGIN actions
-    for action in script.BEGIN:
-        eval(action)
+    if script.BEGIN is not None:
+        script.BEGIN.action(VARS, LINE, FIELDS, NR, FNR, NF)
 
     # Main loop
     for fname, file in files:
@@ -267,13 +293,13 @@ if __name__ == '__main__':
 
             # Check patterns for matches
             for pattern in script.patterns:
-                if pattern.match(LINE, FIELDS, NR, FNR, NF):
-                    pattern.action(LINE, FIELDS, NR, FNR, NF)
+                if pattern.match(VARS, LINE, FIELDS, NR, FNR, NF):
+                    pattern.action(VARS, LINE, FIELDS, NR, FNR, NF)
 
         # Close input files when we're done but not stdin
         if args.files:
             file.close()
 
     # Evaluate END actions
-    for action in script.END:
-        eval(action)
+    if script.END is not None:
+        script.END.action(VARS, LINE, FIELDS, NR, FNR, NF)

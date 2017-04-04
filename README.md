@@ -30,6 +30,8 @@ _s/dragons/useful day to day utilities/_
 - _envstrap.sh_ installs other utilities that I use on a day to day bases (ymmv).
   - _dots_ contains the public parts of my system dotfiles.
 - _bin_ contains reuable utilites.
+- _lib_ contains functions and classes that may be used in other programs and
+  scripts.
 - _scripts_ contains scripts that may/may not be composable.
 - _notes_ contains some examples and thoughts on how I use this stuff.
 - _scratch_ contains work in progress/rough ideas and previous versions of
