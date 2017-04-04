@@ -51,9 +51,9 @@ Future features:
   - Allow assigning of RS, OFS and ORS.
 '''
 _tags = [
-    ('ACTION', r'\{.*\}'),
+    ('ACTION', r'\{.*\}$'),
     ('WHITESPACE', r'\s'),
-    ('PATTERN', r'.*(?=\s+\{)'),
+    ('PATTERN', r'^.*(?=\s+\{)'),
 ]
 
 
@@ -64,7 +64,7 @@ def eval_or_exec(code, VARS, LINE, FIELDS, NR, FNR, NF):
     '''
     while True:
         try:
-            if re.search('(?!<[=><!])=', code):
+            if re.search('(?!<[=><!])=|^for |^if |^while ', code):
                 # TODO: find a proper way to check for statements!
                 result = exec(code, globals(), VARS)
             else:
@@ -81,6 +81,23 @@ def eval_or_exec(code, VARS, LINE, FIELDS, NR, FNR, NF):
         except IndexError:
             # TODO: Find a way of identifying $n index errors only
             return None, VARS
+
+
+def replace_index_lookups(text):
+    '''Convert $n awk style syntax into FIELDS[n] python syntax'''
+    for match in re.finditer(r'\$[0-9A-Za-z]+', text):
+        ix = match.group()
+        try:
+            text = text.replace(
+                ix, 'FIELDS[{}]'.format(int(ix[1:])-1)
+            )
+        except ValueError:
+            # This is a variable name: keep as a string and allow
+            # python to convert when we exec/eval.
+            text = text.replace(
+                ix, 'FIELDS[{}]'.format(ix[1:])
+            )
+    return text
 
 
 class Script:
@@ -137,6 +154,7 @@ class Pattern:
         self.is_regex = False
         self.is_inverted_regex = False
 
+        # NOTE: This works as we have already split on \n|;;
         if not re.fullmatch(r'^.*\{.*\}$', line):
             # Add default print action
             line += ' { print(LINE) }'
@@ -154,35 +172,23 @@ class Pattern:
                     print(err.format(line), file=sys.stderr)
                     sys.exit(1)
 
+                # Tag regex patterns
                 if text.startswith('/') and text.endswith('/'):
-                    # /foo/ is a regex
                     self.is_regex = True
                     text = text[1:-1]
                 elif text.startswith('!/') and text.endswith('/'):
-                    # !/foo/ is an inverted regex
                     self.is_regex = True
                     self.is_inverted_regex = True
                     text = text[2:-1]
                 else:
-                    # Replace index lookups
-                    for match in re.finditer(r'\$[0-9]+', text):
-                        ix = match.group()
-                        text = text.replace(
-                            ix, 'FIELDS[{}]'.format(int(ix[1:])-1)
-                        )
+                    text = replace_index_lookups(text)
                 self._pattern = text
 
             elif tag == 'ACTION':
                 # Remove curlies and whitespace surrounding
                 text = text[1:-1].strip()
-                # $0 == whole line
                 text = text.replace('$0', 'LINE')
-                # Replace index lookups
-                for match in re.finditer(r'\$[0-9]+', text):
-                    ix = match.group()
-                    text = text.replace(
-                        ix, 'FIELDS[{}]'.format(int(ix[1:]) - 1)
-                    )
+                text = replace_index_lookups(text)
                 # Split python into statements
                 self._actions.extend(text.split(';'))
 
@@ -203,8 +209,7 @@ class Pattern:
             try:
                 return eval(self._pattern)
             except:
-                # Errors in a pattern are a mismatch
-                return False
+                return False  # Errors in a pattern are a mismatch
 
     def action(self, VARS, LINE, FIELDS, NR, FNR, NF):
         '''

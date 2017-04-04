@@ -36,14 +36,17 @@ Oh, and it will auto-resolve imports for you. That's kind of nice too.
 
 ### I'm sold! Lets see it in action!
 All of the following examples are valid `pyk` scripts:
-```
-pyk 'NR % 2 == 0 { print("this is an even numbered line!") }' data.csv
-
-pyk '/^foo/ { print ("I start with foo: ", $0) }' data.txt
-
-pyk 'BEGIN { total = 0 };; { total += $3 };; END { print(total) }'
-
-pyk 'float($2) == $2 { math.sin($2) }'
+```bash
+# Print every second line of a file
+$ pyk 'NR % 2 == 0' file
+# Print lines beinging with "foo" along with a message
+$ pyk '/^foo/ { print ("I start with foo: ", $0) }' file
+# Find the total of the 3rd column of the file
+$ pyk 'BEGIN { total = 0 };; { total += $3 };; END { print(total) }' file
+# If the value of the second column is a float, print its Sin value
+$ pyk 'float($2) == $2 { math.sin($2) }' file
+# Enumerate the fields of the first record, one per line
+$ pyk 'NR==1 {for i in range(NF): print("    ",i,$i) }' file
 ```
 
 pyk will implicitly print results of calculations that return anything other
