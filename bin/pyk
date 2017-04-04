@@ -9,7 +9,6 @@ python based one-liners at the command line.
 import re
 import sys
 import argparse
-from collections import namedtuple
 
 
 description = '''\
@@ -51,13 +50,11 @@ Future features:
   - "$n ~ /regex/" or "$n !~ /regex/" for comparison to individual fields
   - Allow assigning of RS, OFS and ORS.
 '''
-
 _tags = [
     ('ACTION', r'\{.*\}'),
     ('WHITESPACE', r'\s'),
     ('PATTERN', r'.*(?=\s+\{)'),
 ]
-Token = namedtuple('token', ['tag', 'val'])
 
 
 def eval_or_exec(code, VARS, LINE, FIELDS, NR, FNR, NF):
