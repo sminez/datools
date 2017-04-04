@@ -1,0 +1,62 @@
+#! /usr/bin/python3
+'''
+HTTP PUT bytes at a specified rate.
+TODO: allow specifying of headers as command line args
+'''
+import time
+import requests
+import argparse
+
+
+def samples(filename, rate):
+    '''Loop over the samples from a file'''
+    n = 0
+    while True:
+        with open(filename, "rb") as f:
+            while True:
+                sample = f.read(rate)
+                if sample == "":
+                    break
+                n += len(sample)
+                yield sample
+                time.sleep(1)
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('file', type=str)
+parser.add_argument('url', type=str)
+parser.add_argument(
+    '-r', '--rate',
+    type=int,
+    default=320,
+    help='Sample rate to stream at in bytes/s'
+)
+parser.add_argument(
+    '-E', '--cert',
+    type=str,
+    required=False,
+    help='SSL certificate to use for the connection'
+)
+parser.add_argument(
+    '-k', '--no-verify',
+    action='store_true',
+    default=False,
+    help='Disable server cert validation'
+)
+
+args = parser.parse_args()
+
+if args.cert != '':
+    requests.put(
+        args.url,
+        cert=args.cert,
+        data=samples(args.file, args.rate),
+        stream=True
+    )
+else:
+    requests.put(
+        args.url,
+        cert=args.cert,
+        data=samples(args.file, args.rate),
+        stream=True
+    )
