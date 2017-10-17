@@ -1,0 +1,24 @@
+#! /usr/bin/python3
+'''
+Flip a csv along its leading diagonal
+'''
+import csv
+import sys
+import argparse
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('file', nargs='?')
+args = parser.parse_args()
+
+if args.file:
+    f = open(args.file, 'r')
+elif not sys.stdin.isatty():
+    f = sys.stdin
+else:
+    print('ERROR: unable to detect input', file=sys.stderr)
+    sys.exit(42)
+
+lines = zip(*csv.reader(f))
+for line in lines:
+    print(','.join(line))
