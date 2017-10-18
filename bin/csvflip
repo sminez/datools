@@ -1,13 +1,17 @@
 #! /usr/bin/python3
 '''
 Flip a csv along its leading diagonal
+
+Can accept input piped from stdin
 '''
 import csv
 import sys
 import argparse
 
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(
+    description='Flip a csv along its leading diagonal'
+)
 parser.add_argument('file', nargs='?')
 args = parser.parse_args()
 

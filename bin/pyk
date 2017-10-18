@@ -64,15 +64,15 @@ def eval_or_exec(code, VARS, LINE, FIELDS, NR, FNR, NF):
     '''
     while True:
         try:
-            if re.search('(?!<[=><!])=|^for |^if |^while ', code):
+            if re.search('(?!<[=><!])=|^for |^if |^while |^import ', code):
                 # TODO: find a proper way to check for statements!
                 result = exec(code, globals(), VARS)
             else:
                 result = eval(code, globals(), VARS)
             return result, VARS
         except NameError as namerr:
-            # namerr.args == ("name 'NAME' is not defined",)
             try:
+                # namerr.args == ("name 'NAME' is not defined",)
                 name = namerr.args[0].split()[1][1:-1]
                 exec("{n} = __import__('{n}')".format(n=name), globals(), VARS)
             except ImportError:
@@ -81,6 +81,13 @@ def eval_or_exec(code, VARS, LINE, FIELDS, NR, FNR, NF):
         except IndexError:
             # TODO: Find a way of identifying $n index errors only
             return None, VARS
+        except AttributeError as err:
+            # Auto imports should handle this but nice to have a backup
+            att = err.args[0].split()[-1]
+            msg = 'Unable to find {}. Did you mean to import a module?'.format(
+                att)
+            print(msg, file=sys.stderr)
+            sys.exit(42)
 
 
 def replace_index_lookups(text):
