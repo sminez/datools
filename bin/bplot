@@ -1,0 +1,107 @@
+#! /usr/bin/python3
+'''
+|        |-----|--|     |
+|--------|     |  |-----|
+|        |-----|--|     |
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+0                       100
+'''
+import pandas as pd
+import argparse
+import sys
+
+
+PLOT_WIDTH = 60
+
+
+def box_stats(s):
+    '''Get some summary stats from a series'''
+    stats = s.describe()
+    stats['low outlier %'] = round(len(s[s < stats['25%']]) / len(s), 4) * 100
+    stats['high outlier %'] = round(len(s[s > stats['75%']]) / len(s), 4) * 100
+    return stats
+
+
+def convert_to_char_width(stats, nchars=PLOT_WIDTH):
+    '''Scale stat values to be in terms of nchar terminal width'''
+    char_stats = stats.copy()
+    mn = char_stats['min']
+    mx = char_stats['max']
+
+    for stat in ['min', 'max', '25%', '50%', '75%']:
+        char_stats[stat] = int((char_stats[stat] - mn) / mx * nchars)
+
+    char_stats['mn'] = mn
+    char_stats['mx'] = mx
+
+    return char_stats
+
+
+def bplot(stats, nchars=PLOT_WIDTH):
+    '''Build the ASCII plot'''
+    stats = convert_to_char_width(stats, nchars)
+
+    smin = int(stats['min'])
+    lq = int(stats['25%'])
+    med = int(stats['50%'])
+    uq = int(stats['75%'])
+    smax = int(stats['max'])
+
+    outer = [' ' for _ in range(nchars + 1)]
+    middle = [' ' for _ in range(nchars + 1)]
+
+    outer[smin], middle[smin] = '|', '|'
+    outer[lq], middle[lq] = '|', '|'
+    outer[med], middle[med] = '|', '|'
+    outer[uq], middle[uq] = '|', '|'
+    outer[smax], middle[smax] = '|', '|'
+
+    outer[lq+1:med] = ['-' for _ in range(lq+1, med)]
+    outer[med+1:uq] = ['-' for _ in range(med+1, uq)]
+    middle[smin+1:lq] = ['-' for _ in range(smin+1, lq)]
+    middle[uq+1:smax] = ['-' for _ in range(uq+1, smax)]
+
+    outer = ''.join(outer)
+    middle = ''.join(middle)
+
+    scale = '⎯' * nchars
+    strmin = str(stats['mn'])
+    strmax = str(stats['mx'])
+    offset = (len(strmin) + len(strmax))
+    minmax = '{}{}{}'.format(strmin, ' ' * (nchars - offset), strmax)
+
+    return '\n'.join([outer, middle, outer, '', scale, minmax])
+
+
+parser = argparse.ArgumentParser(
+    description='Get a quick visual of a dataset'
+)
+parser.add_argument('file', nargs='?')
+parser.add_argument(
+    '-F',
+    '--field-separator',
+    type=str,
+    default=',',
+    required=False,
+    help='character or regext to use for splitting records into fields'
+)
+args = parser.parse_args()
+
+if args.file:
+    f = open(args.file, 'r')
+elif not sys.stdin.isatty():
+    f = sys.stdin
+else:
+    print('ERROR: unable to detect input', file=sys.stderr)
+    sys.exit(42)
+
+for line in f:
+    vals = line.strip().split(args.field_separator)
+    vals = list(map(float, vals))
+    s = pd.Series(vals)
+    stats = box_stats(s)
+    print('\n'.join(str(stats).split('\n')[:-1]))
+    print('\n\n')
+    print(bplot(stats))
+    print('\n\n')
