@@ -97,8 +97,15 @@ else:
     sys.exit(42)
 
 for line in f:
-    vals = line.strip().split(args.field_separator)
-    vals = list(map(float, vals))
+    str_vals = line.strip().split(args.field_separator)
+    vals = []
+
+    for val in str_vals:
+        try:
+            vals.append(float(val))
+        except:
+            pass
+
     s = pd.Series(vals)
     stats = box_stats(s)
     print('\n'.join(str(stats).split('\n')[:-1]))
