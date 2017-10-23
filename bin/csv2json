@@ -1,0 +1,26 @@
+#! /usr/bin/python3
+import argparse
+import json
+import sys
+
+
+parser = argparse.ArgumentParser(
+    description='Convert a csv to JSON lines'
+)
+parser.add_argument('file', nargs='?')
+parser.add_argument('-d', '--delim', default=',')
+args = parser.parse_args()
+
+if args.file:
+    f = open(args.file, 'r')
+elif not sys.stdin.isatty():
+    f = sys.stdin
+else:
+    print('ERROR: unable to detect input', file=sys.stderr)
+    sys.exit(42)
+
+# Pull of the headers
+headers = next(f).strip().split(args.delim)
+for line in f:
+    fields = line.strip().split(args.delim)
+    print(json.dumps({k: v for k, v in zip(headers, fields)}))
