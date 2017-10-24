@@ -22,9 +22,11 @@ else:
     sys.exit(42)
 
 hist, bins = np.histogram(pd.read_csv(f, header=None).values, bins=args.bins)
-hist = np.divide(hist, max(min([h for h in hist if h]), 1))
+scaling = min([h for h in hist if h])
+hist = np.divide(hist, scaling)
 bins = [str(round(b, args.round)) for b in bins]
 padding = max(map(len, bins))
 
+print('■ = {}'.format(scaling))
 for h, b in zip(hist, bins):
     print('{}: '.format(b.ljust(padding)), '■' * int(h))

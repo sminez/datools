@@ -1,0 +1,51 @@
+#! /usr/bin/python3
+import operator as op
+import argparse
+import sys
+
+
+parser = argparse.ArgumentParser(
+    description='''\
+Convert a time series of pulse-like data into min/max per pulse
+'''
+)
+parser.add_argument('file', nargs='?')
+parser.add_argument(
+    '-b', '--baseline',
+    default=0.01,
+    type=float,
+    help='Baseline value to compare to'
+)
+parser.add_argument(
+    '--min',
+    action='store_true',
+    required=False,
+    help='Consider pulses as being below baseline rather than above'
+)
+args = parser.parse_args()
+
+if args.file:
+    f = open(args.file, 'r')
+elif not sys.stdin.isatty():
+    f = sys.stdin
+else:
+    print('ERROR: unable to detect input', file=sys.stderr)
+    sys.exit(42)
+
+
+at_baseline = True
+max_seen = 0.0
+comp = op.ge if args.min else op.le
+
+for line in f:
+    val = float(line.strip())
+    # if val == 0.01:
+    if comp(val, args.baseline):
+        if not at_baseline:
+            at_baseline = True
+            print(max_seen)
+            max_seen = 0.0
+    else:
+        at_baseline = False
+        if val > max_seen:
+            max_seen = val
