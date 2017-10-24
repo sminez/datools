@@ -1,3 +1,0 @@
-#! /bin/bash
-stats=$(curl -s https://www.crowdcube.com/companies/cocoon/pitches/b0N7wl  | perl -n -E  's/\s+//g; if ($last) { s{</?dd>}{}g; print "   $_"; } ; $last = /<dt>(Raised|Investors)/;')
-echo "<span foreground='#cb6077'>CrowdCube:$stats  </span>"
