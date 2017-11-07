@@ -133,6 +133,7 @@ if args.ascii:
     PLOT_CMD = 'set term dumb; ' + PLOT_CMD
 
 LINE = "'{}' using {}:{} title '{}' w l, "
+POINT = "'{}' using {}:{} title '{}', "
 
 if len(COLNAMES) < 2:
     print('ERROR: Not enough columns to plot', file=sys.stderr)
