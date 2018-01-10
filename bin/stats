@@ -1,0 +1,35 @@
+#! /usr/bin/awk -f
+# ----------------
+# Compute some summary statistics about a single column file
+
+# Skip any lines that can't be parsed as numeric
+$1 !~ /^-?[0-9]*\.?[0-9]+$/ {
+    next
+}
+
+# Track the current min and max seen so far
+{ if(min=="" || $1 < min) { min=$1 } }
+{ if(max=="" || $1 > max) { max=$1 } }
+
+# Build an array of all of the values so we can pull out percentiles
+# and update the running counts for the standard deviation
+{ vals[NR]=$0; sum+=$1 ; sumsq+=$1**2 }
+
+END {
+    if (NR > 0) {
+        mean = sum/NR
+        stddev = sqrt(sumsq/NR - mean**2)
+    }
+ 
+    print "N: " NR
+    print "mean: " mean
+    print "stddev: " stddev
+
+    print "min: " min
+    print "25th % = " vals[int(NR*0.25)]
+    print "50th % = " vals[int(NR*0.50)]
+    print "75th % = " vals[int(NR*0.75)]
+    print "max: " max
+
+}
+
