@@ -1,0 +1,46 @@
+#! /usr/bin/awk -f
+# https://en.wikipedia.org/wiki/Akaike_information_criterion
+# 
+# Also see http://www.okstate.edu/sas/v8/sashtml/ets/chap30/sect19.htm
+# for more statistical measures that may be useful.
+#
+# Compute the Akaike Information Criterion for both ep and pu
+# from a CSV with columns:
+#     occupied,ep,pu
+#
+# occupied being 0/1 and ep/pu being floats from 0.0 - 1.0
+#
+# NOTE: As we are using empty probability, occupied being 1
+#       should give a prediction of 0.
+# --------------------------------------------------------------------
+
+# Compute AIC from sum of squared errors and number of data points
+function aic(sse, n) {
+    return n*log(sse/n)
+}
+
+# Program Start: force csv format
+BEGIN {
+    FS=","
+    FEATURES="duration_secs, factor, rms_power, zcr, centroid, kurtosis, skewness, spread"
+    N_FEATURES=8
+}
+
+# Skip any lines that can't be parsed as numeric
+$1 !~ /^-?[0-9]*\.?[0-9]+$/ {
+    next
+}
+
+# ep & pu `Sum of Square Error` running calculations
+# Occupied==1 should be a 0 from the predictor
+{ ep_SSE += ((1-$1)-$2)^2 }
+{ pu_SSE += ((1-$1)-$3)^2 }
+
+
+# Compute AIC
+END {
+    printf("AIC computed using %d features:\n[%s]\n", N_FEATURES, FEATURES)
+    printf("n datapoints: %d\n\n", NR-1)
+    printf("[ep]\n  SSE: %.2f\n  AIC: %.2f\n", ep_SSE, aic(ep_SSE, NR-1))
+    printf("[pu]\n  SSE: %.2f\n  AIC: %.2f\n", pu_SSE, aic(pu_SSE, NR-1))
+}
