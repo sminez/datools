@@ -1,7 +1,28 @@
 #! /usr/bin/python3
+'''
+Convert a csv to json-lines format.
+Accepts either a deliminated file (specified with -d"<DELIMINATOR>") or
+reads deliminated data from stdin.
+
+Example usage:
+>>> cat my-csv.csv | some-other-program | csv2json | jq ...
+>>> csv2json -d";" my-semi-colon-deliminated.csv
+'''
 import argparse
 import json
 import sys
+
+
+def replace_true_false(fields):
+    new = []
+    for f in fields:
+        if f == "true":
+            new.append(True)
+        elif f == "false":
+            new.append(False)
+        else:
+            new.append(f)
+    return new
 
 
 parser = argparse.ArgumentParser(
@@ -22,5 +43,5 @@ else:
 # Pull of the headers
 headers = next(f).strip().split(args.delim)
 for line in f:
-    fields = line.strip().split(args.delim)
+    fields = replace_true_false(line.strip().split(args.delim))
     print(json.dumps({k: v for k, v in zip(headers, fields)}))
