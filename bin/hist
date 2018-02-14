@@ -38,6 +38,10 @@ hist = np.divide(hist, scaling)
 bins = [str(round(b, args.round)) for b in bins]
 padding = max(map(len, bins))
 
-print('■ = {}'.format(scaling))
+# print('■ = {}'.format(scaling))
+# for h, b in zip(hist, bins):
+#     print('{}: '.format(b.ljust(padding)), '■' * int(h))
+
+print('# = {}'.format(scaling))
 for h, b in zip(hist, bins):
-    print('{}: '.format(b.ljust(padding)), '■' * int(h))
+    print('{}: '.format(b.ljust(padding)), '#' * int(h))
